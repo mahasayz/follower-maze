@@ -107,7 +107,8 @@ public class Main {
     private ConcurrentSkipListMap<Integer, Event> eventMap;
     private ConcurrentHashMap<Integer, PrintWriter> clientStream;
     private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Boolean>> followerMap;
-    private ExecutorService executors = Executors.newFixedThreadPool(32);
+    private ExecutorService eventHandlerPool = Executors.newFixedThreadPool(32);
+    private ExecutorService clientHandlerPool = Executors.newFixedThreadPool(16);
     private AtomicInteger counter;
 
     public void init() throws InterruptedException, IOException {
@@ -116,9 +117,9 @@ public class Main {
         followerMap = new ConcurrentHashMap<>();
         EventSourceHandler eventSourceHandler = new EventSourceHandler(9090, eventMap);
         eventSourceHandler.initBus();
-        new ClientHandler(9099, clientStream, followerMap).start();
+        clientHandlerPool.execute(new ClientHandler(9099, clientStream, followerMap));
         counter = new AtomicInteger(1);
-        executors.execute(new Workers(eventMap, clientStream, followerMap, counter));
+        eventHandlerPool.execute(new Workers(eventMap, clientStream, followerMap, counter));
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
