@@ -34,8 +34,6 @@ class Workers extends Thread {
                 System.out.println("Handling event with Id " + event.getId());
                 switch (event.getType()) {
                     case "F": {
-                        if (event.getFromId() == event.getToId())
-                            System.out.println("From and To are similar for " + event.getId());
                         PrintWriter socket = clientStream.getOrDefault(event.getToId(), null);
                         ConcurrentHashMap<Integer, Boolean> list = followerMap.get(event.getToId());
                         if (list == null) {
@@ -107,23 +105,36 @@ public class Main {
     private ConcurrentSkipListMap<Integer, Event> eventMap;
     private ConcurrentHashMap<Integer, PrintWriter> clientStream;
     private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Boolean>> followerMap;
-    private ExecutorService eventHandlerPool = Executors.newFixedThreadPool(32);
-    private ExecutorService clientHandlerPool = Executors.newFixedThreadPool(16);
+    private ExecutorService eventHandlerPool;
+    private ExecutorService clientHandlerPool;
     private AtomicInteger counter;
+    private int sourcesPort;
+    private int clientPort;
+
+    public Main(int sourcesPort, int clientPort) {
+        this.sourcesPort = sourcesPort;
+        this.clientPort = clientPort;
+    }
 
     public void init() throws InterruptedException, IOException {
         eventMap = new ConcurrentSkipListMap<>();
         clientStream = new ConcurrentHashMap<>();
         followerMap = new ConcurrentHashMap<>();
-        EventSourceHandler eventSourceHandler = new EventSourceHandler(9090, eventMap);
+        eventHandlerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
+        clientHandlerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
+        EventSourceHandler eventSourceHandler = new EventSourceHandler(sourcesPort, eventMap);
         eventSourceHandler.initBus();
-        clientHandlerPool.execute(new ClientHandler(9099, clientStream, followerMap));
+        clientHandlerPool.execute(new ClientHandler(clientPort, clientStream, followerMap));
         counter = new AtomicInteger(1);
         eventHandlerPool.execute(new Workers(eventMap, clientStream, followerMap, counter));
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        Main main = new Main();
+        if (args.length != 2)
+            throw new IllegalArgumentException("Syntax: Main <events_port> <client_port>");
+        int sourcePort = Integer.parseInt(args[0]);
+        int clientPort = Integer.parseInt(args[1]);
+        Main main = new Main(sourcePort, clientPort);
         main.init();
     }
 
