@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by malam on 12/7/16.
  */
-public class EventHandler implements Runnable {
+public class EventHandler extends Thread {
 
     private static ConcurrentHashMap<Integer, Client> clients;
     private static ConcurrentSkipListMap<Integer, Event> eventMap;

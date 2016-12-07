@@ -40,7 +40,7 @@ public class Main {
         Socket eventSocket = eventServer.accept();
         pool.submit(new EventListener(eventSocket.getInputStream(), eventMap));
 
-        pool.submit(new EventHandler(eventMap, clients));
+        new EventHandler(eventMap, clients).start();
     }
 
 }
