@@ -37,7 +37,15 @@ public class EventHandlerSpec {
 
         Thread.sleep(5000);
 
-        Assert.assertEquals(os.toString(), "1|F|200|100\r\n3|S|300\r\n4|B\r\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("1|F|200|100")
+                .append(System.lineSeparator())
+                .append("3|S|300")
+                .append(System.lineSeparator())
+                .append("4|B")
+                .append(System.lineSeparator());
+
+        Assert.assertEquals(os.toString(), sb.toString());
     }
 
     @AfterClass
