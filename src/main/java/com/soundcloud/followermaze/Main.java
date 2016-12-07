@@ -11,18 +11,32 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by malam on 12/7/16.
+ * <p>
+ *     This is the driver class of our application. It starts two <code>ServerSocket</code>
+ *     instances meant for the event source and client, respectively.
+ *     It also starts the <code>EventHandler</code> for processing the incoming events
+ *     and routing messages to the connected clients.
+ * </p>
+ * @author Mahbub Alam
  */
 public class Main {
 
+    /**
+     *
+     */
     private static ConcurrentSkipListMap<Integer, Event> eventMap;
     private static ConcurrentHashMap<Integer, Client> clients;
 
     public static void main(String[] args) throws IOException {
+        if (args.length != 2)
+            throw new IllegalArgumentException("Syntax: com.soundcloud.followermaze.Main <event_source_port> <client_port>");
+
+        int eventSourcePort = Integer.parseInt(args[0]);
+        int clientPort = Integer.parseInt(args[1]);
 
         ExecutorService pool = Executors.newCachedThreadPool();
 
-        ServerSocket clientServer = new ServerSocket(9099);
+        ServerSocket clientServer = new ServerSocket(clientPort);
         clients = new ConcurrentHashMap<>();
         eventMap = new ConcurrentSkipListMap<>();
 
@@ -36,7 +50,7 @@ public class Main {
            }
         });
 
-        ServerSocket eventServer = new ServerSocket(9090);
+        ServerSocket eventServer = new ServerSocket(eventSourcePort);
         Socket eventSocket = eventServer.accept();
         pool.submit(new EventListener(eventSocket.getInputStream(), eventMap));
 

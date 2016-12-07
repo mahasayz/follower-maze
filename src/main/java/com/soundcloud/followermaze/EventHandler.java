@@ -7,7 +7,11 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by malam on 12/7/16.
+ * <p>
+ *     This class mainly constitutes the event-handler thread which reads the events
+ *     in a orderly manner and handles them according to their type.
+ * </p>
+ * @author Mahbub Alam
  */
 public class EventHandler extends Thread {
 
@@ -16,12 +20,21 @@ public class EventHandler extends Thread {
     private static AtomicInteger counter = new AtomicInteger(1);
     private static ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Boolean>> followerMap;
 
+    /**
+     *
+     * @param e the ordered map of events mapped according to their sequence ID
+     * @param c the client map mapped according to client ID containing references to their output stream
+     */
     public EventHandler(ConcurrentSkipListMap e, ConcurrentHashMap c) {
         clients = c;
         eventMap = e;
         followerMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Contains the logic for processing each event as it happens
+     * @param event the event to be processed
+     */
     private void process(Event event) {
         switch (event.getType()) {
             case FOLLOW: {

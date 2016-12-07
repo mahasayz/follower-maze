@@ -7,13 +7,23 @@ import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * Created by malam on 12/7/16.
+ * <p>
+ *    This is the event listener that listens to a series of UTF-8 encoded events
+ *    separated by \r\n. The event listener stores the events in a event map where
+ *    the events are naturally ordered according to their sequence id.
+ * </p>
+ * @author Mahbub Alam
  */
 public class EventListener implements Runnable {
 
     private BufferedReader in;
     private static ConcurrentSkipListMap<Integer, Event> eventMap;
 
+    /**
+     *
+     * @param in the input stream for receiving events
+     * @param e the event map for storing the events to be processed by the {@code EventHandler}
+     */
     public EventListener(InputStream in, ConcurrentSkipListMap e) {
         this.in = new BufferedReader(new InputStreamReader(in));
         eventMap = e;

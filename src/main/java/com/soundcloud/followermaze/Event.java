@@ -1,7 +1,8 @@
 package com.soundcloud.followermaze;
 
 /**
- * Created by malam on 12/7/16.
+ * The event data structure
+ * @author Mahbub Alam
  */
 public class Event {
     private int seqID;
@@ -10,6 +11,15 @@ public class Event {
     private int toID;
     private String message;
 
+    /**
+     *
+     * @param seqID the sequence id of the event
+     * @param type  the type of the event
+     * @param fromID the user who initiated the event
+     * @param toID  the target user affected by the event
+     * @param message   the raw event message
+     * @throws Exception throws an exception if the raw event is malformed
+     */
     public Event(int seqID, String type, int fromID, int toID, String message) throws Exception {
         this.seqID = seqID;
         this.fromID = fromID;

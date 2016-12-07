@@ -6,7 +6,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * Created by malam on 12/7/16.
+ * The client data structure to store client connections
+ * @author Mahbub Alam
  */
 public class Client {
 
@@ -14,6 +15,11 @@ public class Client {
     private PrintWriter out;
     private final BlockingQueue<String> input;
 
+    /**
+     *
+     * @param clientID  the client id
+     * @param os    the output stream for communicating with client
+     */
     public Client(int clientID, OutputStream os) {
         this.clientID = clientID;
         this.out = new PrintWriter(os);
@@ -23,19 +29,5 @@ public class Client {
     public int getClientID() { return clientID; }
 
     public PrintWriter getOut() { return this.out; }
-
-    /*public void consume(String message) {
-        out.println(message);
-    }
-
-    public void run() {
-        while (true) {
-            try {
-                consume(input.take());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
 }
