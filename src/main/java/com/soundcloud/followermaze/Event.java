@@ -1,28 +1,49 @@
 package com.soundcloud.followermaze;
 
+import static com.soundcloud.EventType.*;
+
 /**
- * Created by Mahbub on 12/4/2016.
+ * Created by malam on 12/7/16.
  */
 public class Event {
-
-    private int id;
-    private String type;
-    private int fromId;
-    private int toId;
+    private int seqID;
+    private EventType type;
+    private int fromID;
+    private int toID;
     private String message;
 
-    public Event(int id, String type, int fromId, int toId, String message) {
-        this.id = id;
-        this.type = type;
-        this.fromId = fromId;
-        this.toId = toId;
+    public Event(int seqID, String type, int fromID, int toID, String message) {
+        this.seqID = seqID;
+        this.fromID = fromID;
+        this.toID = toID;
         this.message = message;
+        switch (type) {
+            case "F": {
+                this.type = FOLLOW;
+                break;
+            }
+            case "B": {
+                this.type = BROADCAST;
+                break;
+            }
+            case "U": {
+                this.type = UNFOLLOW;
+                break;
+            }
+            case "P": {
+                this.type = PRIVATE;
+                break;
+            }
+            case "S": {
+                this.type = STATUS;
+                break;
+            }
+        }
     }
 
-    public int getId() { return this.id; }
-    public String getType() { return this.type; }
-    public int getFromId() { return this.fromId; }
-    public int getToId() { return this.toId; }
-    public String getMessage() { return this.message; }
-
+    public int getSeqID() { return  this.seqID; }
+    public EventType getType() { return  this.type; }
+    public int getFromID() { return  this.fromID; }
+    public int getToID() { return  this.toID; }
+    public String getMessage() { return  this.message; }
 }
