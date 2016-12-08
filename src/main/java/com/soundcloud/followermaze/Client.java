@@ -13,7 +13,6 @@ public class Client {
 
     private int clientID;
     private PrintWriter out;
-    private final BlockingQueue<String> input;
 
     /**
      *
@@ -23,7 +22,6 @@ public class Client {
     public Client(int clientID, OutputStream os) {
         this.clientID = clientID;
         this.out = new PrintWriter(os);
-        this.input = new LinkedBlockingDeque<>();
     }
 
     public int getClientID() { return clientID; }
